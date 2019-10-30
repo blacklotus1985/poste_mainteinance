@@ -19,10 +19,13 @@ df['opendate'] = pd.to_datetime(df['opendate'])
 df['resolvedate'] = pd.to_datetime(df['resolvedate'])
 df['resolvedate'] = df['resolvedate'].bfill()
 df.set_index('resolvedate',inplace=True)
-df.resample(conf.get("TIME","resample_time"))
+
+# attenzione il tempo viene calcolato dal tempo +freq al tempo quindi, ad esempio, se ci sta la riga ... 00:00:00 e 1 ora di frequenza raggruppa da 00 00 a 01:00
+
+df_new = df.resample(conf.get("TIME","resample_time"))
 
 # attenzione il tempo viene calcolato dal tempo -freq al tempo quindi, ad esempio, se ci sta la riga ... 01:30:00 e 1 ora di frequenza raggruppa da 00 30 a 01:30
-group_1h = df.groupby(pd.Grouper(freq='60Min', base=30, label='right')).sum()
+group_1h = df.groupby([pd.Grouper(freq='60Min', base=30, label='right'),df.pbarea1]).size().reset_index(name='count_pbarea1')
 
 df['timesolve'] = df['resolvedate']-df['opendate']
 
