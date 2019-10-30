@@ -17,13 +17,19 @@ df.columns = map(str.lower, df.columns)
 
 df['opendate'] = pd.to_datetime(df['opendate'])
 df['resolvedate'] = pd.to_datetime(df['resolvedate'])
-df['resolvedate'] = df['resolvedate'].ffill().bfill()
+df['resolvedate'] = df['resolvedate'].bfill()
 df.set_index('resolvedate',inplace=True)
-df.resample('4H').sum()
+df.resample(conf.get("TIME","resample_time"))
+
+# attenzione il tempo viene calcolato dal tempo -freq al tempo quindi, ad esempio, se ci sta la riga ... 01:30:00 e 1 ora di frequenza raggruppa da 00 30 a 01:30
+group_1h = df.groupby(pd.Grouper(freq='60Min', base=30, label='right')).sum()
+
 df['timesolve'] = df['resolvedate']-df['opendate']
 
 df['timesolve'] = df['timesolve'].dt.total_seconds()
 df['timesolve'] = pd.to_numeric(df['timesolve'],errors='coerce')
+
+
 
 
 print(1)
