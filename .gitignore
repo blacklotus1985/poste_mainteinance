@@ -68,11 +68,5 @@ target/
 *.xlsx
 *.xls
 *.docx
-
-*.csv#
-
-utility/Azure ML:
-
-utility/Programma caricare dati: Microsoft Azure Storage E
-
-utility/rapporto_attività_svolte
+*.xml
+*.iml

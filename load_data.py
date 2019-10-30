@@ -19,7 +19,6 @@ df['resolvedate'] = pd.to_datetime(df['resolvedate'])
 df['timesolve'] = df['resolvedate']-df['opendate']
 df['timesolve'] = df['timesolve'].dt.total_seconds()
 df['timesolve'] = pd.to_numeric(df['timesolve'],errors='coerce')
-#sum_pnl_bnp_curr = dettaglio_pns_s2[['id_trade', 'pnl_bnp_curr']].groupby(['id_trade']).sum().reset_index()
 
 #test comment
 df['regione'] = df['regione'].str.lower()

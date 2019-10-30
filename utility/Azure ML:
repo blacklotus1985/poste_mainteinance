@@ -1,0 +1,77 @@
+Azure ML:
+	- put into production models:
+
+	- kubernetes for real time continuous application
+
+	- interested in all skill levels not only for experts, user experience.
+
+	- industry leading MLOps
+
+	- open
+
+	- trusted
+
+	new interface next month
+
+	-Models -> versioning of models for production
+
+	- Endpoints for deployment: batch and real time.
+		can deploy to any place, also your web site
+
+experiment workflow:
+	- name experiment 
+	- load data (iris.csv)
+	- can download model and use it on other application
+
+ML Studio:
+	drag and drop toolkit (uses scikit-learn as open tools under the hood)
+
+	there is a run your own python/R model.
+
+create new vm:
+	choose the size
+	can have a schedule time to run and pause machines.
+	can install packages with pip install.
+
+
+How do I take a model into production?
+
+MLops:
+	api are available open and on github
+
+
+Focused on Data Science experience:
+MLperf: standard for machine learning -> look up.
+
+
+Principles of AI:
+
+model training is the main focus on ethical ML
+policies to deal with sensible data
+
+Engineering Practice:
+
+interpretml
+
+wrap algorithms together, understand if a new algo is good or not.
+
+Will be available fairness gridsearch -> fairlearn
+
+	offer loans at the same rate men and women -> is there a bias in data.
+
+
+Privacy and Security.
+	protect info and resist attacks
+
+	Trusted execution environments: POC Trusted 
+		encription of models, results, data
+		working also on training models
+		it is encrypted in RAM
+		need to trust hardware
+	Homomorphic encryption:
+		slower but not hardware trust need.
+
+		Differential Privacy:
+			injects noise to prevent to get back to individuals from aggregated data.
+Microsoft + Harvard develop privacy platform with differential privacy.
+
