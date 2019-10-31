@@ -3,23 +3,9 @@ import os
 import pandas as pd
 from pathlib import Path
 from matplotlib import pyplot as plt
-import seaborn as sns
+from utility import filter_functions
 
 
-def intern_channel_filter(df,bilancio=False):
-    """
-    filter dataframe with major filters, first entity, first group, autore to retrieve only intern channel
-    :param df:df to filter
-    :param bilancio: if true filter pbarea2 for squadratura di bilancio
-    :return:filtered df
-    """
-    df.columns = map(str.lower, df.columns)
-    df = df[(df['firstentity'] == 'Polo Tecnologico') | (df['firstentity'] == 'SERVICESUPPORT')]
-    df = df [(df['firstgroup'] == 'SERVICE DESK_TD') | (df['firstgroup'] == 'ServiceDesk_CO')|(df['firstgroup'] == 'SERVICESUPPORT')]
-    df = df[df['autore']=='AMSD Automation']
-    if bilancio:
-        df[df['pbarea2'] == 'SQUADRATURE_DI_BILANCIO ']
-    return df
 
 
 
@@ -27,7 +13,7 @@ base_directory = str(Path(__file__).parent)
 conf = configparser.ConfigParser()
 conf.read(base_directory+'/utility/configuration.ini')
 df  = pd.read_csv(base_directory+conf.get("PATH","ticket"),error_bad_lines=False,sep =";")
-df = intern_channel_filter(df=df,bilancio=False)
+df = filter_functions.intern_channel_filter(df=df,bilancio=False)
 
 
 
