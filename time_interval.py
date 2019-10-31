@@ -17,6 +17,8 @@ df = filter_functions.intern_channel_filter(df=df,bilancio=False)
 
 
 
+df = calculate_time_difference(df,column1='resolvedate',column2='opendate',new_col_name='time_solved_ticket',total_seconds=True)
+
 df['opendate'] = pd.to_datetime(df['opendate'])
 df['resolvedate'] = pd.to_datetime(df['resolvedate'])
 df['resolvedate'] = df['resolvedate'].bfill()
