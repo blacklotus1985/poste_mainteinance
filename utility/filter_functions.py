@@ -16,6 +16,34 @@ def intern_channel_filter(df,bilancio=False):
         df[df['pbarea2'] == 'SQUADRATURE_DI_BILANCIO ']
     return df
 
+def self_channel_filter(df,balance=False):
+    """
+    filter rows of dataframe for self channel
+    :param df: dataframe to filter
+    :param balance: if true filter pbarea2 for squadratura di bilancio
+    :return: filtered df
+    """
+    df.columns = map(str.lower, df.columns)
+    df = df[(df['firstentity'] == 'SERVICESUPPORT')&(df['firstgroup'] == 'SERVICESUPPORT')]
+    df = df[df['autore']=='AMSD Automation']
+    if balance:
+        df[df['pbarea2'] == 'SQUADRATURE_DI_BILANCIO ']
+    return df
+
+def telephone_channel_filter(df):
+    """
+    filter rows of dataframe for telephone channel
+    :param df: dataframe to filter
+    :return: filtered df
+    """
+    df.columns = map(str.lower, df.columns)
+    df = df[df['firstentity'] == 'Polo Tecnologico']
+    df = df[(df['firstgroup'] == 'SERVICE DESK_TD') | (df['firstgroup'] == 'ServiceDesk_CO')]
+    return df
+
+
+
+
 def cleanDataWithSigma(X, sigma=1E-02):
     """
     removes columns with sigma less than sigma

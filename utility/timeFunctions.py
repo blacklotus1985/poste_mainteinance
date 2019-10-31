@@ -58,3 +58,24 @@ def calculate_time_difference(df,column1,column2, total_seconds = False,new_col_
         df[new_col_name] = df[new_col_name].dt.total_seconds()
         df[new_col_name] = pd.to_numeric(df[new_col_name], errors='coerce')
     return df
+
+
+
+def time_filter_rows(df,column_name,conf,bigger=False,set_index=False):
+    """
+    check in config file if time has value and filter dataframe with that filter
+    :param df: df to filter
+    :param conf: config file to get value of time
+    :param column_name: name of column to filter
+    :param bigger: if True bigger than, if False smaller than
+    :param set_index: if True set index to column name
+    :return: filtered df
+    """
+    if len(conf.get("TIME", "filter")):
+        if bigger:
+            df = df[df[column_name] > conf.get("TIME", "filter")]
+        else:
+            df = df[df[column_name] < conf.get("TIME", "filter")]
+    if set_index:
+        df.set_index(column_name, inplace=True)
+    return df
