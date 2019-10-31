@@ -70,3 +70,5 @@ target/
 *.docx
 *.xml
 *.iml
+
+data/\.~lock\.TICKET_LUGLIO_2019\.csv#
