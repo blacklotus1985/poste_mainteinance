@@ -1,0 +1,37 @@
+filtri
+
+1) non più per sala consulenza ma per canale interno senza sonde ( web - telefonico): lavorare sempre sempre su questi filtri anche quando arriveranno i dati di due anni. 
+	- campo first entity e selezionare solo polo tecnologico e service support
+	- campo first group e selezionare service_desk_pd, service_desk_co, service_support
+	- campo autore selezionare amsd_automation
+	- campo pbarea2 modalità squadratura di bilancio da filtrare (non fondamentale)
+
+
+OCS campo booleano indica se la criticità è risolta direttamente al telefono (si, no): è importante perché indica una rapidità nei tempi di risoluzione. (Parlare eventualmente della sua costruzione per controllare sia tutto in ordine) - percentuale di frazionari/uffici che riescono a risolvere il problema col si.
+	OCS è si se:
+	  first entity = entità risolvente
+	  first group = gruppo risolvente
+	  pb_opendate = pb_closedate
+	  opendate - resolvedate(closedate) < 60 minuti
+
+persidid importante ma nel nostro file si chiama diverso:
+	è valorizzato solo per incident che hanno associato un problem
+Gli Id dentro rif_problem sono dei problemi padri ma bisogna controllare che siano delle righe presenti nella colonna numero
+
+I problem padre sono utili perché sono contenitori di incident quindi potrebbero forse essere usati come variabile target di una classificazione 
+
+colonna pbarea1 valore hardware se è cosi allora ci sarà uno e un solo problem associato. L'incident hardware o non ha un problem se viene delegato al manutentore diventa un problem ma solo quello.
+
+problemi di rete (non sappiamo come trovarli, forse non li abbiamo). L'incident o non ha un prolbem o se viene delegato al provider diventa un problem ma solo quel problem. Uguale a hardware sopra. 
+
+frazionario è un campo tendenzialmente alfanumerico ma può contenere nome proprio e non va considerato sbagliato. 
+
+differenza tra "chiuso" e "chiuso e certificato": campo status, "chiuso e certificato" indica una risoluzione più complessa e, tendenzialmente, più lunga.
+
+campo priorità da non utilizzare non è affidabile, consideriamo il campo tipologia_bloccante è valorizzata. Se valorizzata ha portato un blocco quindi ha priorità high, alternativamente low.
+
+
+campo pbarea2 voce squadratura di bilancio, significa che vengono segnalati incident uguali di un problema noto, sostanzialmente sono incident duplicati. Non molto da considerare
+
+
+

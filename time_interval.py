@@ -37,6 +37,9 @@ df['opendate'] = pd.to_datetime(df['opendate'])
 df['opendate'] = df['opendate'].bfill()
 # if len(conf.get("TIME","filter")):
 #     df = df[df['resolvedate']<conf.get("TIME","filter")]
+
+# calculate day of the week of opendate, 0 is Monday 6 is Sunday
+day = df['opendate'].dt.dayofweek
 df.set_index('opendate',inplace=True)
 
 # attenzione il tempo viene calcolato dal tempo +freq al tempo quindi, ad esempio, se ci sta la riga ... 00:00:00 e 1 ora di frequenza raggruppa da 00 00 a 01:00
@@ -44,11 +47,28 @@ df.set_index('opendate',inplace=True)
 #df_new = df.resample(conf.get("TIME","resample_time"))
 
 # attenzione il tempo viene calcolato dal tempo -freq al tempo quindi, ad esempio, se ci sta la riga ... 01:30:00 e 1 ora di frequenza raggruppa da 00 30 a 01:30
-min15 = df.groupby(pd.Grouper(freq='15Min')).size()
+min15 = df.groupby(pd.Grouper(freq='60Min')).size()
+
+# to have week day groups, to be edited
+min15_new = min15.reset_index()
+week = min15_new['opendate'].dt.weekday
+frame_fin = min15_new.merge(week, left_index=True, right_index=True)
+
+frame_fin = frame_fin.rename(columns={"opendate_y": "weekday", 0:"n_tickets", "opendate_x": "ticket_interval_time"})
+
+
+#risolv = df.groupby('regione').timesolve.mean()
+group_week = frame_fin.groupby('weekday').n_tickets.sum()
+group_week_frame = group_week.to_frame()
 
 #save to csv in output folder
 folder_path = os.getcwd()
 min15.to_csv(folder_path + conf.get("OUTPUT","folder_path")+conf.get("OUTPUT","filename_time_interval"),header=['n° tickets_open'],sep=';')
+group_week_frame.rename(index={0: "Monday", 1: "Tuesday", 2: "Wednesday",3:"Thursday",4:"Friday",5:"Saturday",6:"Sunday"},inplace=True)
+group_week_frame.to_csv(folder_path + conf.get("OUTPUT","folder_path")+conf.get("OUTPUT","filename_weekday_ticket_count"),sep=";")
+print(1)
+
+
 
 
 '''
