@@ -39,7 +39,30 @@ df['opendate'] = df['opendate'].bfill()
 #     df = df[df['resolvedate']<conf.get("TIME","filter")]
 
 # calculate day of the week of opendate, 0 is Monday 6 is Sunday
-day = df['opendate'].dt.dayofweek
+weeday_df = df['opendate'].dt.weekday
+weeday_df.replace(to_replace=[0,1,2,3,4,5,6],value=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'],inplace=True)
+
+#weeday_df.rename(index={0: "Monday", 1: "Tuesday", 2: "Wednesday",3:"Thursday",4:"Friday",5:"Saturday",6:"Sunday"},inplace=True)
+
+
+# list of keys to group
+keylist = ['pbarea1','opendate_y']
+
+
+df_opendate = df.merge(weeday_df, left_index=True, right_index=True)
+
+df_opendate['opendate_y'].rename(index={0: "Monday", 1: "Tuesday", 2: "Wednesday",3:"Thursday",4:"Friday",5:"Saturday",6:"Sunday"},inplace=True)
+
+
+# groups of pbarea and weekday
+groups = df_opendate.groupby(keylist).size()
+
+#dataframe of groups
+
+groups = groups.to_frame()
+
+
+
 df.set_index('opendate',inplace=True)
 
 # attenzione il tempo viene calcolato dal tempo +freq al tempo quindi, ad esempio, se ci sta la riga ... 00:00:00 e 1 ora di frequenza raggruppa da 00 00 a 01:00
@@ -66,6 +89,7 @@ folder_path = os.getcwd()
 min15.to_csv(folder_path + conf.get("OUTPUT","folder_path")+conf.get("OUTPUT","filename_time_interval"),header=['n° tickets_open'],sep=';')
 group_week_frame.rename(index={0: "Monday", 1: "Tuesday", 2: "Wednesday",3:"Thursday",4:"Friday",5:"Saturday",6:"Sunday"},inplace=True)
 group_week_frame.to_csv(folder_path + conf.get("OUTPUT","folder_path")+conf.get("OUTPUT","filename_weekday_ticket_count"),sep=";")
+groups.to_csv(folder_path + conf.get("OUTPUT","folder_path")+conf.get("OUTPUT","groups_and_pbarea1"),sep=";")
 print(1)
 pbarea = True
 
