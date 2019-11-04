@@ -67,9 +67,13 @@ min15.to_csv(folder_path + conf.get("OUTPUT","folder_path")+conf.get("OUTPUT","f
 group_week_frame.rename(index={0: "Monday", 1: "Tuesday", 2: "Wednesday",3:"Thursday",4:"Friday",5:"Saturday",6:"Sunday"},inplace=True)
 group_week_frame.to_csv(folder_path + conf.get("OUTPUT","folder_path")+conf.get("OUTPUT","filename_weekday_ticket_count"),sep=";")
 print(1)
+pbarea = True
 
-
-
+if pbarea:
+    pbarea_group = df.groupby('pbarea1').size()
+    pbarea_group = pbarea_group.to_frame()
+    pbarea_group.to_csv(folder_path + conf.get("OUTPUT", "folder_path") + conf.get("OUTPUT", "pbarea_general"), sep=";")
+    print(1)
 
 '''
 some small plot if necessary
