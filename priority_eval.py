@@ -6,7 +6,7 @@ import numpy as np
 conf = configparser.ConfigParser()
 main_path = os.getcwd()
 conf.read(main_path+'/utility/configuration.ini')
-df  = pd.read_csv(main_path+conf.get("PATH","ticket"),error_bad_lines=False,sep =";")
+df  = pd.read_csv(main_path+conf.get("PATH","ticket"), error_bad_lines=False,sep =";")
 
 
 df.columns = map(str.lower, df.columns)
