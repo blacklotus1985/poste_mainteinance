@@ -144,7 +144,25 @@ def checkCentroidDimension(centroid):
         pass
     return centroid
 
+
+def n_top_items(x, n_items, max=True):
+    """
+    get index of max n_items from array
+    :param x: array
+    :param n_items: number of items
+    :param max: if True gives indexes of max, if False gives indexes of min
+    :return: indexes of array
+    """
+    if max:
+        sort_array = x.argsort()[-n_items:][::-1]
+    else:
+        sort_array = x.argsort()[:n_items][::1]
+    return sort_array
+
+
 def hot_encode(df,cols):
     df[cols] =df[cols].apply(lambda x: pd.factorize(x)[0]+1)
     df = pd.get_dummies(df,columns=cols)
     return df
+
+
