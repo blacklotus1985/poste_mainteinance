@@ -13,14 +13,19 @@ from nltk.stem.snowball import ItalianStemmer
 import numpy as np
 import os
 import re
+from pathlib import Path
+
 
 # read input files, create configuration instance and make a copy of df
 conf = configparser.ConfigParser()
 main_path = os.getcwd()
-path = os.path.dirname(os.getcwd())
-conf.read(os.path.dirname(os.getcwd())+'/configurations/configurations.ini')
-filename = conf.get("INPUT_FILES",conf.get("INPUT_FILES","input"))
-df = pd.read_csv(os.path.dirname(os.getcwd())+filename,delimiter=';' )
+base_directory = str(Path(__file__).parent)
+conf = configparser.ConfigParser()
+conf.read(base_directory+'/utility/configuration.ini')
+df  = pd.read_csv(base_directory+conf.get("PATH","ticket"),error_bad_lines=False,sep =";")
+df.columns = map(str.lower,df.columns)
+df = df.iloc[0:1000,:]
+
 old_df = df.copy()
 
 # clean descriptions from italian stopwords
@@ -45,14 +50,14 @@ swap_vocab = {v:k for k,v in dict_vocab.items()}
 cosine_sim = cosine_similarity(tfidf_matrix, tfidf_matrix)
 
 # find the most 5 representative words for each job position and save it into csv file
-final_dict_list, data_frame_id_words = find_best_words(df=df,matrix=tfidf_matrix,conf=conf,word_dict=swap_vocab,n=5,filename="id_words.csv")
+final_dict_list, data_frame_id_words = find_best_words(df=df,column_index_name='numero',matrix=tfidf_matrix,conf=conf,word_dict=swap_vocab,n=5,filename="id_words.csv")
 
 # creates a list for each description and the index of the best 5 descriptions
-description_index_list = top_desciptions(cosine_sim)
+#description_index_list = top_desciptions(cosine_sim)
 
 # loops all the description and gets indexes of all the descriptions that are within a threshold of similarity.
-threshhold_list,df_threshold = threshold_descriptions(df=df,matrix=cosine_sim,conf=conf,threshold=0.3,filename="threshold_descriptions.csv")
+#threshhold_list,df_threshold = threshold_descriptions(df=df,matrix=cosine_sim,conf=conf,threshold=0.3,filename="threshold_descriptions.csv")
 
 
 # drop duplicates from column
-indices = pd.Series(df.index, index=df['title']).drop_duplicates()
+#indices = pd.Series(df.index, index=df['title']).drop_duplicates()

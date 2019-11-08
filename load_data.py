@@ -5,7 +5,7 @@ from matplotlib import pyplot as plt
 import seaborn as sns
 import numpy as np
 from utility import filter_functions
-from utility import timeFunctions
+from utility import time_functions
 from pathlib import Path
 
 

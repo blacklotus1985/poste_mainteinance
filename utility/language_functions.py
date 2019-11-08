@@ -3,6 +3,7 @@ from nltk.stem.snowball import ItalianStemmer
 import re
 import os
 import pandas as pd
+import numpy as np
 from utility.filter_functions import n_top_items
 
 
@@ -41,9 +42,11 @@ def clean_stop_words(df,column,lang,stem=True):
         df[column] = cleaned_series
     return df
 
-def find_best_words(df,matrix,word_dict,n,conf,filename="default",save=True):
+def find_best_words(df,column_index_name,matrix,word_dict,n,conf,filename="default",save=True):
     """
     retrieves most significant words from tfidf matrix
+    :param df: df to analyze
+    :param column_index_name: column of index to be used
     :param matrix: sparse matrix
     :param word_dict: dictionary of index and words of tfidf
     :param n: number of words retrieved
@@ -59,17 +62,14 @@ def find_best_words(df,matrix,word_dict,n,conf,filename="default",save=True):
         list.append(top_items)
         for elem in list[0]:
             final_terms.append(word_dict[elem])
-        dict={"job_ID":df["ID"][i], "top_words":final_terms}
+        dict={"job_ID":df[column_index_name][i], "top_words":final_terms}
         final_dict_list.append(dict)
         list=[]
         final_terms=[]
     data_frame_id_words = pd.DataFrame.from_records(final_dict_list,coerce_float=True)
 
     if save:
-        wd = os.getcwd()
-        os.chdir(wd)
-        data_frame_id_words.to_csv(os.path.dirname(os.getcwd()) + conf.get("OUTPUT_FILES", "folder") + filename,
-                                   sep=";", index=False)
+        data_frame_id_words.to_csv(os.getcwd() + conf.get("OUTPUT", "folder_path") + conf.get("OUTPUT", "id_words"), sep=";", index=False)
     return final_dict_list, data_frame_id_words
 
 

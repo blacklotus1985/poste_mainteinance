@@ -4,7 +4,7 @@ import pandas as pd
 from pathlib import Path
 from matplotlib import pyplot as plt
 from utility import filter_functions
-from utility import timeFunctions
+from utility import time_functions
 
 
 
@@ -26,11 +26,11 @@ df = pd.concat([self_channel_filter,telephone_channel_filter])
 
 
 # create a columns with resolution time of ticket
-df = timeFunctions.calculate_time_difference(df,column1='resolvedate',column2='opendate',new_col_name='time_solved_ticket',total_seconds=True)
+df = time_functions.calculate_time_difference(df, column1='resolvedate', column2='opendate', new_col_name='time_solved_ticket', total_seconds=True)
 
 
 # filters df based on time of column given
-timeFunctions.time_filter_rows(df,column_name='resolvedate',conf=conf,bigger=True,set_index=True)
+time_functions.time_filter_rows(df, column_name='resolvedate', conf=conf, bigger=True, set_index=True)
 
 df['opendate'] = pd.to_datetime(df['opendate'])
 df['opendate'] = pd.to_datetime(df['opendate'])

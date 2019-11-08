@@ -15,7 +15,7 @@ import re
 conf = configparser.ConfigParser()
 main_path = os.getcwd()
 path = os.path.dirname(os.getcwd())
-conf.read(os.path.dirname(os.getcwd())+'/configurations/configurations.ini')
+conf.read(os.path.dirname(os.getcwd())+'/utility/configuration.ini')
 filename = conf.get("INPUT_FILES",conf.get("INPUT_FILES","input"))
 df = pd.read_csv(os.path.dirname(os.getcwd())+filename,delimiter=';' )
 old_df = df.copy()
