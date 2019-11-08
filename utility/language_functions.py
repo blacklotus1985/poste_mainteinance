@@ -17,8 +17,13 @@ def clean_stop_words(df,column,lang,stem=True):
     :param stem: if stemming activated
     :return: cleaned dataframe
     """
-    for i in range(df.shape[1]):
-        df.loc[i,column]=re.sub('[^a-zA-Z]', ' ', df[column][i])
+    for i in range(df.shape[0]):
+        try:
+            df.loc[i,column]=re.sub('[^a-zA-Z]+',' ', df[column][i])
+        except:
+            print ("problems with row =" + str(i))
+            df.drop(labels=i,axis=0,errors= 'ignore',inplace=True)
+            continue
     document = df[column].str.lower().str.split()
     sentence_stem = []
     document_stem = []
@@ -62,12 +67,15 @@ def find_best_words(df,column_index_name,matrix,word_dict,n,conf,filename="defau
         list.append(top_items)
         for elem in list[0]:
             final_terms.append(word_dict[elem])
-        dict={"job_ID":df[column_index_name][i], "top_words":final_terms}
-        final_dict_list.append(dict)
+            try:
+                dict={"numero":df[column_index_name][i], "top_words":final_terms}
+                final_dict_list.append(dict)
+            except:
+                print ("cannot create dictionary top words of index = "+ str(i))
         list=[]
         final_terms=[]
     data_frame_id_words = pd.DataFrame.from_records(final_dict_list,coerce_float=True)
-
+    data_frame_id_words.drop_duplicates(subset='numero',inplace=True)
     if save:
         data_frame_id_words.to_csv(os.getcwd() + conf.get("OUTPUT", "folder_path") + conf.get("OUTPUT", "id_words"), sep=";", index=False)
     return final_dict_list, data_frame_id_words

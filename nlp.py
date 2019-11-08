@@ -24,10 +24,16 @@ conf = configparser.ConfigParser()
 conf.read(base_directory+'/utility/configuration.ini')
 df  = pd.read_csv(base_directory+conf.get("PATH","ticket"),error_bad_lines=False,sep =";")
 df.columns = map(str.lower,df.columns)
-df = df.iloc[0:1000,:]
-
+df = df[['numero','description']]
+#df = df.loc[0:20000,:]
+print("df shape before filter for lenght of descrpition = " +str(df.shape[0]))
 old_df = df.copy()
 
+df = df[(df.description.str.len() > conf.getint("PARAMETERS","min_len_desc"))]
+print("df shape after filter for lenght of descrpition = " +str(df.shape[0]))
+
+
+#df = df[df[len(df['description'])>=10]]
 # clean descriptions from italian stopwords
 df = clean_stop_words(df=df, column="description", lang = "italian",stem=True)
 
@@ -50,7 +56,7 @@ swap_vocab = {v:k for k,v in dict_vocab.items()}
 cosine_sim = cosine_similarity(tfidf_matrix, tfidf_matrix)
 
 # find the most 5 representative words for each job position and save it into csv file
-final_dict_list, data_frame_id_words = find_best_words(df=df,column_index_name='numero',matrix=tfidf_matrix,conf=conf,word_dict=swap_vocab,n=5,filename="id_words.csv")
+final_dict_list, data_frame_id_words = find_best_words(df=df,column_index_name='numero',matrix=tfidf_matrix,conf=conf,word_dict=swap_vocab,n=conf.getint("PARAMETERS","num_parole_rilevanti"),filename="id_words.csv")
 
 # creates a list for each description and the index of the best 5 descriptions
 #description_index_list = top_desciptions(cosine_sim)
