@@ -3,6 +3,7 @@ from utility.language_functions import clean_stop_words
 from utility.language_functions import find_best_words
 from utility.language_functions import top_desciptions
 from utility.language_functions import threshold_descriptions
+from utility import filter_functions
 
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -24,8 +25,17 @@ conf = configparser.ConfigParser()
 conf.read(base_directory+'/utility/configuration.ini')
 df  = pd.read_csv(base_directory+conf.get("PATH","ticket"),error_bad_lines=False,sep =";")
 df.columns = map(str.lower,df.columns)
+# filter data only for self channel client
+self_channel_filter = filter_functions.self_channel_filter(df,balance=False)
+
+# filter data only for telepthone channel
+telephone_channel_filter = filter_functions.telephone_channel_filter(df)
+
+#concat two dataframes
+df = pd.concat([self_channel_filter,telephone_channel_filter])
+df = df[df['tipo']!='R'].reset_index()
 df = df[['numero','description']]
-#df = df.loc[0:20000,:]
+df = df.loc[0:20000,:]
 print("df shape before filter for lenght of descrpition = " +str(df.shape[0]))
 old_df = df.copy()
 
