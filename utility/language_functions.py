@@ -22,7 +22,6 @@ def clean_stop_words(df,column,lang,stem=True):
             df.loc[i,column]=re.sub('[^a-zA-Z]+',' ', df[column][i])
         except:
             print ("problems with row =" + str(i))
-            df.drop(labels=i,axis=0,errors= 'ignore',inplace=True)
             continue
     document = df[column].str.lower().str.split()
     sentence_stem = []
@@ -104,12 +103,15 @@ def threshold_descriptions(df,matrix, conf, threshold=0.5,filename="default",sav
     threshhold_list=[]
     for i in range(len(matrix[0])):
         cosine_desc = matrix[i]
-        dict = {"job_ID":df["ID"][i],"similar_ID":df["ID"][np.where(matrix[i]>threshold)[0]].values, "similarity_value":np.asarray(cosine_desc[np.where(cosine_desc>threshold)[0]])}
-        threshhold_list.append(dict)
-    df_threshold = pd.DataFrame.from_records(threshhold_list,coerce_float=True)
+        try:
+            dict = {"numero":df["numero"][i],"similar_descriptions":df["numero"][np.where(matrix[i]>threshold)[0]].values, "similarity_value":np.asarray(cosine_desc[np.where(cosine_desc>threshold)[0]])}
+            threshhold_list.append(dict)
+        except:
+            continue
+        df_threshold = pd.DataFrame.from_records(threshhold_list,coerce_float=True)
 
     if save:
         wd = os.getcwd()
         os.chdir(wd)
-        df_threshold.to_csv(os.path.dirname(os.getcwd())+conf.get("OUTPUT_FILES","folder")+filename,sep=";", index = False)
+        df_threshold.to_csv(os.getcwd()+conf.get("OUTPUT_FILES","folder")+filename,sep=";", index = False)
     return threshhold_list,df_threshold
