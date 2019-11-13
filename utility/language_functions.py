@@ -5,6 +5,7 @@ import os
 import pandas as pd
 import numpy as np
 from utility.filter_functions import n_top_items
+from collections import Counter
 
 
 def clean_stop_words(df,column,lang,stem=True):
@@ -107,8 +108,8 @@ def threshold_descriptions(df,matrix, data_frame_id_words, conf, threshold=0.5,f
             try:
                 array_sim_desc = df["numero"][np.where(matrix[i] > threshold)[0]].values
                 array_sim_value = np.asarray(cosine_desc[np.where(cosine_desc > threshold)[0]])
-                array_sim_desc = np.delete(array_sim_desc,0)
-                array_sim_value = np.delete(array_sim_value,0)
+                # array_sim_desc = np.delete(array_sim_desc,0)
+                # array_sim_value = np.delete(array_sim_value,0)
 
             except:
                 pass
@@ -118,6 +119,9 @@ def threshold_descriptions(df,matrix, data_frame_id_words, conf, threshold=0.5,f
                 for elem in dict['similar_descriptions']:
                     word_list.append(data_frame_id_words['top_words'][data_frame_id_words['numero'] == elem].values[0])
                 dict['word_list'] = word_list
+                flattened = [val for sublist in word_list for val in sublist]
+                dict['counter'] = Counter(flattened)
+
                 word_list = []
 
 
