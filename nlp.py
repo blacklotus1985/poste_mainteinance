@@ -75,7 +75,7 @@ final_dict_list, data_frame_id_words = find_best_words(df=df,column_index_name='
 description_index_list = top_desciptions(cosine_sim)
 
 # loops all the description and gets indexes of all the descriptions that are within a threshold of similarity.
-threshhold_list,df_threshold = threshold_descriptions(df=df,matrix=cosine_sim,conf=conf,threshold=0.5,filename="threshold_poste_descriptions.csv")
+threshhold_list,df_threshold = threshold_descriptions(df=df,matrix=cosine_sim,data_frame_id_words=data_frame_id_words,conf=conf,threshold=0.5,filename="threshold_poste_descriptions.csv")
 
 print(1)
 print(1)

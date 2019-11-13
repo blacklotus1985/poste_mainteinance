@@ -93,7 +93,7 @@ def top_desciptions(matrix, n=5):
         description_index_list.append(array_res)
     return description_index_list
 
-def threshold_descriptions(df,matrix, conf, threshold=0.5,filename="default",save=True):
+def threshold_descriptions(df,matrix, data_frame_id_words, conf, threshold=0.5,filename="default",save=True):
     """
     gets all the similarities for each description that are bigger of a certain threshold
     :param matrix: matrix of similarties
@@ -113,6 +113,15 @@ def threshold_descriptions(df,matrix, conf, threshold=0.5,filename="default",sav
             except:
                 pass
             dict = {"numero":df["numero"][i],"similar_descriptions":array_sim_desc, "similarity_value":array_sim_value}
+            word_list = []
+            if len(dict['similar_descriptions'])>0:
+                for elem in dict['similar_descriptions']:
+                    word_list.append(data_frame_id_words['top_words'][data_frame_id_words['numero'] == elem].values[0])
+                dict['word_list'] = word_list
+                word_list = []
+
+
+
             threshhold_list.append(dict)
         except:
             continue
