@@ -35,7 +35,7 @@ telephone_channel_filter = filter_functions.telephone_channel_filter(df)
 df = pd.concat([self_channel_filter,telephone_channel_filter])
 df = df[df['tipo']!='R'].reset_index()
 df = df[['numero','description']]
-df = df.loc[0:10000,:]
+df = df.loc[0:1000,:]
 print("df shape before filter for lenght of descrpition = " +str(df.shape[0]))
 old_df = df.copy()
 
@@ -77,6 +77,8 @@ description_index_list = top_desciptions(cosine_sim)
 # loops all the description and gets indexes of all the descriptions that are within a threshold of similarity.
 threshhold_list,df_threshold = threshold_descriptions(df=df,matrix=cosine_sim,conf=conf,threshold=0.5,filename="threshold_poste_descriptions.csv")
 
+print(1)
+print(1)
 
 # drop duplicates from column
 #indices = pd.Series(df.index, index=df['title']).drop_duplicates()

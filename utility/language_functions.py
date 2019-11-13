@@ -104,7 +104,15 @@ def threshold_descriptions(df,matrix, conf, threshold=0.5,filename="default",sav
     for i in range(len(matrix[0])):
         cosine_desc = matrix[i]
         try:
-            dict = {"numero":df["numero"][i],"similar_descriptions":df["numero"][np.where(matrix[i]>threshold)[0]].values, "similarity_value":np.asarray(cosine_desc[np.where(cosine_desc>threshold)[0]])}
+            try:
+                array_sim_desc = df["numero"][np.where(matrix[i] > threshold)[0]].values
+                array_sim_value = np.asarray(cosine_desc[np.where(cosine_desc > threshold)[0]])
+                array_sim_desc = np.delete(array_sim_desc,0)
+                array_sim_value = np.delete(array_sim_value,0)
+
+            except:
+                pass
+            dict = {"numero":df["numero"][i],"similar_descriptions":array_sim_desc, "similarity_value":array_sim_value}
             threshhold_list.append(dict)
         except:
             continue
