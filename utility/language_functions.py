@@ -94,7 +94,7 @@ def top_desciptions(matrix, n=5):
         description_index_list.append(array_res)
     return description_index_list
 
-def threshold_descriptions(df,matrix, data_frame_id_words, conf, threshold=0.5,filename="default",save=True):
+def threshold_descriptions(df,matrix, data_frame_id_words, conf, threshold=0.5,filename="default",save=True,drop_duplicates=True):
     """
     gets all the similarities for each description that are bigger of a certain threshold
     :param matrix: matrix of similarties
@@ -134,5 +134,9 @@ def threshold_descriptions(df,matrix, data_frame_id_words, conf, threshold=0.5,f
     if save:
         wd = os.getcwd()
         os.chdir(wd)
+        if drop_duplicates:
+            print("rows before drop duplicates = " +str(df_threshold.shape[0]))
+            df_threshold.drop_duplicates(subset='counter')
+            print("rows after drop duplicates = "+str(df_threshold.shape[0]))
         df_threshold.to_csv(os.getcwd()+conf.get("OUTPUT_FILES","folder")+filename,sep=";", index = False)
     return threshhold_list,df_threshold
