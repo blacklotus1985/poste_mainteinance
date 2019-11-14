@@ -35,7 +35,7 @@ telephone_channel_filter = filter_functions.telephone_channel_filter(df)
 df = pd.concat([self_channel_filter,telephone_channel_filter])
 df = df[df['tipo']!='R'].reset_index()
 df = df[['numero','description']]
-df = df.loc[0:1000,:]
+df = df.loc[0:5000,:]
 print("df shape before filter for lenght of descrpition = " +str(df.shape[0]))
 old_df = df.copy()
 

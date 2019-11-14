@@ -138,6 +138,7 @@ def threshold_descriptions(df,matrix, data_frame_id_words, conf, threshold=0.5,f
             print("rows before drop duplicates = " +str(df_threshold.shape[0]))
             df_threshold['counter'] = df_threshold['counter'].astype(str)
             df_threshold = df_threshold.drop_duplicates(subset='counter')
+            
             print("rows after drop duplicates = "+str(df_threshold.shape[0]))
         df_threshold.to_csv(os.getcwd()+conf.get("OUTPUT_FILES","folder")+filename,sep=";", index = False)
     return threshhold_list,df_threshold
