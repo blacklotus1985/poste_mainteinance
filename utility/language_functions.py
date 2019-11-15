@@ -113,7 +113,7 @@ def threshold_descriptions(df,matrix, data_frame_id_words, conf, threshold=0.5,f
 
             except:
                 pass
-            dict = {"numero":df["numero"][i],"similar_descriptions":array_sim_desc, "similarity_value":array_sim_value}
+            dict = {"numero":df["numero"][i],"similar_descriptions":array_sim_desc, "similarity_value":array_sim_value, "cluster_dim":len(array_sim_desc)}
             word_list = []
             if len(dict['similar_descriptions'])>0:
                 for elem in dict['similar_descriptions']:
@@ -121,6 +121,7 @@ def threshold_descriptions(df,matrix, data_frame_id_words, conf, threshold=0.5,f
                 dict['word_list'] = word_list
                 flattened = [val for sublist in word_list for val in sublist]
                 dict['counter'] = Counter(flattened)
+
 
                 word_list = []
 
