@@ -15,6 +15,15 @@ import numpy as np
 import os
 import re
 from pathlib import Path
+import nltk
+from sklearn.cluster import KMeans
+from matplotlib import pyplot as plt
+
+stopwords = nltk.corpus.stopwords.words('italian')
+print(len(stopwords))
+newStopWords = ['sff','ae','ipp','dc','st','ml','ae','mx','tp','ipp','imz','bs','agp','st','dm','ae','nr','tft','dn','rr','mp','ra','bm','gi','nd','rr','rc','pm','mz']
+stopwords.extend(newStopWords)
+print(len(stopwords))
 
 
 # read input files, create configuration instance and make a copy of df
@@ -67,6 +76,26 @@ cosine_sim = cosine_similarity(tfidf_matrix, tfidf_matrix)
 
 # put diagonal values default = -1 to prevent counting them in clusters afterwards
 np.fill_diagonal(cosine_sim,-1)
+
+# k means find best number of clusters
+wcss = []
+print("start elbow")
+# for i in range(1, 11):
+#     kmeans = KMeans(n_clusters = i, init = 'k-means++', random_state = 42)
+#     kmeans.fit(cosine_sim)
+#     wcss.append(kmeans.inertia_)
+# plt.plot(range(1, 11), wcss)
+# plt.title('The Elbow Method')
+# plt.xlabel('Number of clusters')
+# plt.ylabel('WCSS')
+# plt.show()
+
+# Fitting K-Means to the dataset
+kmeans = KMeans(n_clusters = 3, init = 'k-means++', random_state = 1)
+y_kmeans = kmeans.fit_predict(cosine_sim)
+
+
+
 
 # build cosine similarity dataframe with rows and columns named with df['numbers']
 cosine_sim_pd = pd.DataFrame(cosine_sim,columns=df['numero'],index=df['numero'])
