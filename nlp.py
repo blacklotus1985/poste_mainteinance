@@ -98,16 +98,21 @@ y_kmeans = kmeans.fit_predict(cosine_sim)
 
 
 # build cosine similarity dataframe with rows and columns named with df['numbers']
-cosine_sim_pd = pd.DataFrame(cosine_sim,columns=df['numero'],index=df['numero'])
 
-# find the most 5 representative words for each job position and save it into csv file
-final_dict_list, data_frame_id_words = find_best_words(df=df,column_index_name='numero',matrix=tfidf_matrix,conf=conf,word_dict=swap_vocab,n=conf.getint("PARAMETERS","num_parole_rilevanti"),filename="id_words.csv")
+for i in range(kmeans.n_clusters):
+    print ("iteration = " +str(i))
+    cosine_sim_pd = pd.DataFrame(cosine_sim,columns=df['numero'],index=df['numero'])
 
-# creates a list for each description and the index of the best 5 descriptions
-description_index_list = top_desciptions(cosine_sim)
+    cosine_sim_pd= cosine_sim_pd[y_kmeans==i]
 
-# loops all the description and gets indexes of all the descriptions that are within a threshold of similarity.
-threshhold_list,df_threshold = threshold_descriptions(df=df,matrix=cosine_sim,data_frame_id_words=data_frame_id_words,conf=conf,threshold=0.5,filename="threshold_poste_cluster_descriptions_no_equals.csv",drop_duplicates=True)
+    # find the most 5 representative words for each job position and save it into csv file
+    final_dict_list, data_frame_id_words = find_best_words(df=df[y_kmeans==i],column_index_name='numero',matrix=tfidf_matrix,conf=conf,word_dict=swap_vocab,n=conf.getint("PARAMETERS","num_parole_rilevanti"),filename="id_words"+":cluster_" + str(i)+".csv")
+
+    # creates a list for each description and the index of the best 5 descriptions
+    description_index_list = top_desciptions(cosine_sim)
+
+    # loops all the description and gets indexes of all the descriptions that are within a threshold of similarity.
+    threshhold_list,df_threshold = threshold_descriptions(df=df[y_kmeans==i],matrix=cosine_sim,data_frame_id_words=data_frame_id_words,conf=conf,threshold=0.5,filename="threshold_poste_cluster_descriptions"+":cluster_" + str(i)+".csv",drop_duplicates=True)
 
 print(1)
 print(1)
