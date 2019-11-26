@@ -47,7 +47,7 @@ def clean_stop_words(df,column,lang,stem=True):
         df[column] = cleaned_series
     return df
 
-def find_best_words(df,column_index_name,matrix,word_dict,n,conf,filename="default",save=True):
+def find_best_words(df,column_index_name,matrix,word_dict,n,conf,start,filename="default",save=True):
     """
     retrieves most significant words from tfidf matrix
     :param df: df to analyze
@@ -77,7 +77,7 @@ def find_best_words(df,column_index_name,matrix,word_dict,n,conf,filename="defau
     data_frame_id_words = pd.DataFrame.from_records(final_dict_list,coerce_float=True)
     data_frame_id_words.drop_duplicates(subset='numero',inplace=True)
     if save:
-        data_frame_id_words.to_csv(os.getcwd() + conf.get("OUTPUT", "folder_path") + conf.get("OUTPUT", "id_words"), sep=";", index=False)
+        data_frame_id_words.to_csv(os.getcwd() + conf.get("OUTPUT", "folder_path") + conf.get("OUTPUT", "id_words")+str(start)+'.csv', sep=";", index=False)
     return final_dict_list, data_frame_id_words
 
 
@@ -94,7 +94,7 @@ def top_desciptions(matrix, n=5):
         description_index_list.append(array_res)
     return description_index_list
 
-def threshold_descriptions(df,matrix, data_frame_id_words, conf, threshold=0.5,filename="default",save=True,drop_duplicates=True):
+def threshold_descriptions(df,matrix, data_frame_id_words, conf, start, threshold=0.5,filename="default",save=True,drop_duplicates=True):
     """
     gets all the similarities for each description that are bigger of a certain threshold
     :param matrix: matrix of similarties
@@ -141,5 +141,5 @@ def threshold_descriptions(df,matrix, data_frame_id_words, conf, threshold=0.5,f
             df_threshold = df_threshold.drop_duplicates(subset='counter')
 
             print("rows after drop duplicates = "+str(df_threshold.shape[0]))
-        df_threshold.to_csv(os.getcwd()+conf.get("OUTPUT_FILES","folder")+filename,sep=";", index = False)
+        df_threshold.to_csv(os.getcwd()+conf.get("OUTPUT_FILES","folder")+filename+str(start)+'.csv',sep=";", index = False)
     return threshhold_list,df_threshold
