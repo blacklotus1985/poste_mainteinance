@@ -6,7 +6,8 @@ from pathlib import Path
 import nltk
 import numpy as np
 import pandas as pd
-from sklearn.cluster import KMeans
+import datetime
+
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
@@ -17,11 +18,8 @@ from utility.language_functions import threshold_descriptions
 from utility.language_functions import top_desciptions
 
 stopwords = nltk.corpus.stopwords.words('italian')
-print(len(stopwords))
 newStopWords = ['sff','ae','ipp','dc','st','ml','ae','mx','tp','ipp','imz','bs','agp','st','dm','ae','nr','tft','dn','rr','mp','ra','bm','gi','nd','rr','rc','pm','mz']
 stopwords.extend(newStopWords)
-print(len(stopwords))
-import datetime
 start = datetime.datetime.now().strftime('%Y-%m-%d--%H-%M-%S')
 
 
@@ -53,7 +51,6 @@ df = df[(df[conf.get("PARAMETERS","column_name")].str.len() > conf.getint("PARAM
 print("df shape after filter for lenght of descrpition = " +str(df.shape[0]))
 
 
-#df = df[df[len(df['description'])>=10]]
 # clean descriptions from italian stopwords
 df = clean_stop_words(df=df, column=conf.get("PARAMETERS","column_name"), lang = "italian",stem=True)
 
@@ -87,20 +84,9 @@ final_dict_list, data_frame_id_words = find_best_words(df=df,column_index_name='
 description_index_list = top_desciptions(cosine_sim)
 
 # loops all the description and gets indexes of all the descriptions that are within a threshold of similarity.
-threshhold_list,df_threshold = threshold_descriptions(df=df,matrix=cosine_sim,data_frame_id_words=data_frame_id_words,conf=conf,start=start,threshold=0.5,filename="threshold_poste_cluster_descriptions",drop_duplicates=True)
+threshhold_list,df_threshold = threshold_descriptions(df=df,matrix=cosine_sim,data_frame_id_words=data_frame_id_words,conf=conf,start=start,threshold=0.6,filename="threshold_poste_cluster_descriptions",drop_duplicates=True)
 
+end = datetime.datetime.now().strftime('%Y-%m-%d--%H-%M-%S')
 
-# plt.scatter(cosine_sim[y_kmeans == 0, 0], cosine_sim[y_kmeans == 0, 1], s = 100, c = 'red', label = 'Cluster 1')
-# plt.scatter(cosine_sim[y_kmeans == 1, 0], cosine_sim[y_kmeans == 1, 1], s = 100, c = 'blue', label = 'Cluster 2')
-# plt.scatter(cosine_sim[y_kmeans == 2, 0], cosine_sim[y_kmeans == 2, 1], s = 100, c = 'green', label = 'Cluster 3')
-# plt.scatter(kmeans.cluster_centers_[:, 0], kmeans.cluster_centers_[:, 1], s = 300, c = 'yellow', label = 'Centroids')
-# plt.title('Semantic Clusters')
-# plt.xlabel('Annual Income (k$)')
-# plt.ylabel('Spending Score (1-100)')
-# plt.legend()
-# plt.show()
+print(str(end-start))
 print(1)
-print(1)
-
-# drop duplicates from column
-#indices = pd.Series(df.index, index=df['title']).drop_duplicates()
