@@ -16,9 +16,10 @@ from utility.language_functions import clean_stop_words
 from utility.language_functions import find_best_words
 from utility.language_functions import threshold_descriptions
 from utility.language_functions import top_desciptions
+import time
 
 stopwords = nltk.corpus.stopwords.words('italian')
-newStopWords = ['sff','ae','ipp','dc','st','ml','ae','mx','tp','ipp','imz','bs','agp','st','dm','ae','nr','tft','dn','rr','mp','ra','bm','gi','nd','rr','rc','pm','mz']
+newStopWords = ['sff','ae','ipp','dc','mc','mg','vg','gia','sff','ipp','cpt','dr','nd','ml','st','ml','ae','mx','tp','ipp','imz','bs','agp','st','dm','ae','nr','tft','dn','rr','mp','ra','bm','gi','nd','rr','rc','pm','mz']
 stopwords.extend(newStopWords)
 start = datetime.datetime.now().strftime('%Y-%m-%d--%H-%M-%S')
 
@@ -50,6 +51,9 @@ print("df shape before filter for lenght of descrpition = " +str(df.shape[0]))
 df = df[(df[conf.get("PARAMETERS","column_name")].str.len() > conf.getint("PARAMETERS","min_len_desc"))]
 print("df shape after filter for lenght of descrpition = " +str(df.shape[0]))
 
+#shuffle
+df = df.sample(frac=1).reset_index(drop=True)
+
 
 # clean descriptions from italian stopwords
 df = clean_stop_words(df=df, column=conf.get("PARAMETERS","column_name"), lang = "italian",stem=True)
@@ -58,7 +62,7 @@ df = clean_stop_words(df=df, column=conf.get("PARAMETERS","column_name"), lang =
 df[conf.get("PARAMETERS","column_name")] = df[conf.get("PARAMETERS","column_name")].fillna('')
 
 # create tfidf model instance
-tfidf = TfidfVectorizer(stop_words='english')
+tfidf = TfidfVectorizer(stop_words=stopwords,max_df=0.8)
 
 # apply tfidf model to description column and create tf idf matrix
 tfidf_matrix = tfidf.fit_transform(df[conf.get("PARAMETERS","column_name")])
@@ -84,9 +88,12 @@ final_dict_list, data_frame_id_words = find_best_words(df=df,column_index_name='
 description_index_list = top_desciptions(cosine_sim)
 
 # loops all the description and gets indexes of all the descriptions that are within a threshold of similarity.
-threshhold_list,df_threshold = threshold_descriptions(df=df,matrix=cosine_sim,data_frame_id_words=data_frame_id_words,conf=conf,start=start,threshold=0.6,filename="threshold_poste_cluster_descriptions",drop_duplicates=True)
+threshhold_list,df_threshold = threshold_descriptions(df=df,matrix=cosine_sim,data_frame_id_words=data_frame_id_words,conf=conf,start=start,threshold=0.65,filename="software_cluster_descriptions",drop_duplicates=True)
 
 end = datetime.datetime.now().strftime('%Y-%m-%d--%H-%M-%S')
+start = datetime.datetime.strptime(start,'%Y-%m-%d--%H-%M-%S')
+end = datetime.datetime.strptime(end,'%Y-%m-%d--%H-%M-%S')
+
 
 print(str(end-start))
 print(1)
