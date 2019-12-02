@@ -55,7 +55,7 @@ def find_best_words(df,column_index_name,matrix,word_dict,n,conf,start,filename=
     :param matrix: sparse matrix
     :param word_dict: dictionary of index and words of tfidf
     :param n: number of words retrieved
-    :return: dataframe with job id -  top words
+    :return: dataframe with number -  top words
     """
 
     list=[]
@@ -99,7 +99,7 @@ def threshold_descriptions(df,matrix, data_frame_id_words, conf, start, threshol
     gets all the similarities for each description that are bigger of a certain threshold
     :param matrix: matrix of similarties
     :param threshold: fixed threshold
-    :return: data frame of dictionary list of Job ID - similarityID - Similarity value
+    :return: data frame of dictionary list of number - similarityID - Similarity value
     """
     threshhold_list=[]
     for i in range(len(matrix[0])):
