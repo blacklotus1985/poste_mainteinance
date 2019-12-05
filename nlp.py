@@ -39,8 +39,11 @@ self_channel_filter = filter_functions.self_channel_filter(df,balance=False)
 # filter data only for telepthone channel
 telephone_channel_filter = filter_functions.telephone_channel_filter(df)
 
+
+
 #concat two dataframes
 df = pd.concat([self_channel_filter,telephone_channel_filter])
+
 df = df[df['tipo']!='R'].reset_index()
 old_df = df.copy()
 

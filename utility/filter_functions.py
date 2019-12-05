@@ -16,6 +16,14 @@ def intern_channel_filter(df,bilancio=False):
         df[df['pbarea2'] == 'SQUADRATURE_DI_BILANCIO ']
     return df
 
+def mutui_prestiti_filter(df):
+    """
+    filter df with only mutui and prestiti service
+    :param df: dataframe to filter
+    :return: filtered dataframe
+    """
+    df = df[df["servizio"]!='Mutui E Assistenza']
+
 def self_channel_filter(df,balance=False):
     """
     filter rows of dataframe for self channel
@@ -38,7 +46,7 @@ def telephone_channel_filter(df):
     """
     df.columns = map(str.lower, df.columns)
     df = df[df['firstentity'] == 'Polo Tecnologico']
-    df = df[(df['firstgroup'] == 'SERVICE DESK_TD') | (df['firstgroup'] == 'ServiceDesk_CO')]
+    #df = df[(df['firstgroup'] == 'SERVICE DESK_TD') | (df['firstgroup'] == 'ServiceDesk_CO')]
     return df
 
 

@@ -123,14 +123,18 @@ def threshold_descriptions(df,matrix, data_frame_id_words, conf, start, threshol
                 dict['counter'] = Counter(flattened)
 
 
-                word_list = []
 
 
 
             threshhold_list.append(dict)
         except:
             continue
+
+
         df_threshold = pd.DataFrame.from_records(threshhold_list,coerce_float=True)
+        if conf.getboolean("PARAMETERS", "cluster_filter_active"):
+            df_threshold = df_threshold.sort_values(by=['cluster_dim'], ascending=False)
+            df_threshold = df_threshold[df_threshold.cluster_dim > conf.getint("PARAMETERS", "cluster_dim_filt")]
 
     if save:
         wd = os.getcwd()

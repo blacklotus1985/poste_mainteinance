@@ -98,7 +98,6 @@ min15.to_csv(folder_path + conf.get("OUTPUT","folder_path")+conf.get("OUTPUT","f
 group_week_frame.rename(index={0: "Monday", 1: "Tuesday", 2: "Wednesday",3:"Thursday",4:"Friday",5:"Saturday",6:"Sunday"},inplace=True)
 group_week_frame.to_csv(folder_path + conf.get("OUTPUT","folder_path")+conf.get("OUTPUT","filename_weekday_ticket_count"),sep=";")
 groups.to_csv(folder_path + conf.get("OUTPUT","folder_path")+conf.get("OUTPUT","groups_and_pbarea_all"),sep=";")
-print(1)
 pbarea = False
 
 if pbarea:
@@ -113,32 +112,9 @@ if pbarea:
     area_frazionario.to_csv(folder_path + conf.get("OUTPUT", "folder_path") + conf.get("OUTPUT", "area_frazionario"),sep=";")
     pbarea_all.to_csv(folder_path + conf.get("OUTPUT", "folder_path") + conf.get("OUTPUT", "pbarea_all"),sep=";")
 
-    print(1)
 
 
 
-print(1)
-print(2)
-'''
-some small plot if necessary
-
-#variable_to_plot = group_1h[group_1h[conf.get('PLOT','column')]==conf.get('PLOT','filter')]
-
-# ax = plt.subplot(111)
-# ax.bar(variable_to_plot['resolvedate'],variable_to_plot['count_pbarea2'], width=10)
-# ax.xaxis_date()
-#
-# plt.plot_date(variable_to_plot['resolvedate'],variable_to_plot['count_pbarea2'],kind='bar')
-# plt.xlabel('interval with week freq')
-# plt.ylabel('pbarea2 ATM')
-# plt.show()
-
-# df['timesolve'] = df['resolvedate']-df['opendate']
-#
-# df['timesolve'] = df['timesolve'].dt.total_seconds()
-# df['timesolve'] = pd.to_numeric(df['timesolve'],errors='coerce')
-
-'''
 
 
 
