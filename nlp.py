@@ -59,7 +59,7 @@ df = df.sample(frac=1).reset_index(drop=True)
 
 
 # clean descriptions from italian stopwords
-df = clean_stop_words(df=df, column=conf.get("PARAMETERS","column_name"), lang = "italian",stem=True)
+df = clean_stop_words(df=df, column=conf.get("PARAMETERS","column_name"), lang = "italian",stem=False)
 
 # clean descriptions
 df[conf.get("PARAMETERS","column_name")] = df[conf.get("PARAMETERS","column_name")].fillna('')

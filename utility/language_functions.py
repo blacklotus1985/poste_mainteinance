@@ -6,6 +6,10 @@ import pandas as pd
 import numpy as np
 from utility.filter_functions import n_top_items
 from collections import Counter
+import operator
+import collections
+
+
 
 
 def clean_stop_words(df,column,lang,stem=True):
@@ -67,11 +71,14 @@ def find_best_words(df,column_index_name,matrix,word_dict,n,conf,start,filename=
         list.append(top_items)
         for elem in list[0]:
             final_terms.append(word_dict[elem])
-            try:
-                dict={"numero":df[column_index_name][i], "top_words":final_terms}
-                final_dict_list.append(dict)
-            except:
-                print ("cannot create dictionary top words of index = "+ str(i))
+            dict={"numero":df[column_index_name][i], "top_words":final_terms}
+            final_dict_list.append(dict)
+
+            # try:
+            #     dict={"numero":df[column_index_name][i], "top_words":final_terms}
+            #     final_dict_list.append(dict)
+            # except:
+            #     print ("cannot create dictionary top words of index = "+ str(i))
         list=[]
         final_terms=[]
     data_frame_id_words = pd.DataFrame.from_records(final_dict_list,coerce_float=True)
@@ -118,14 +125,11 @@ def threshold_descriptions(df,matrix, data_frame_id_words, conf, start, threshol
             if len(dict['similar_descriptions'])>0:
                 for elem in dict['similar_descriptions']:
                     word_list.append(data_frame_id_words['top_words'][data_frame_id_words['numero'] == elem].values[0])
-                dict['word_list'] = word_list
+                #dict['word_list'] = word_list
                 flattened = [val for sublist in word_list for val in sublist]
                 dict['counter'] = Counter(flattened)
-
-
-
-
-
+                dict['counter'] = {k:v for (k,v) in dict['counter'].items() if v >= conf.getint("PARAMETERS","min_freq_cluster_word")}
+                dict['counter'] = sorted(dict['counter'].items(), key=operator.itemgetter(1),reverse=True)
             threshhold_list.append(dict)
         except:
             continue

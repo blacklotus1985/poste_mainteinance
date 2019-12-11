@@ -79,7 +79,7 @@ df.set_index('opendate',inplace=True)
 
 
 # attenzione il tempo viene calcolato dal tempo -freq al tempo quindi, ad esempio, se ci sta la riga ... 01:30:00 e 1 ora di frequenza raggruppa da 00 30 a 01:30
-min15 = df.groupby(pd.Grouper(freq='24H')).size()
+min15 = df.groupby(pd.Grouper(freq='15min')).size()
 
 # to have week day groups, to be edited
 min15_new = min15.reset_index()
@@ -91,6 +91,29 @@ frame_fin = frame_fin.rename(columns={"opendate_y": "weekday", 0:"n_tickets", "o
 #risolv = df.groupby('regione').timesolve.mean()
 group_week = frame_fin.groupby('weekday').n_tickets.sum()
 group_week_frame = group_week.to_frame()
+
+hour_min_list = []
+
+pd_time = pd.to_datetime(frame_fin['ticket_interval_time'])
+
+for elem in pd_time:
+    hour_min_list.append(elem.strftime("%H:%M"))
+
+frame_fin['hour_min'] = hour_min_list
+time_unique = frame_fin['hour_min'].unique()
+week_day_unique = frame_fin['weekday'].unique()
+
+from itertools import zip_longest,product
+prod = list(product(week_day_unique,time_unique))
+a = prod[0]
+g=frame_fin[(frame_fin['weekday']==a[0])&(frame_fin['hour_min']==a[1])]
+list_time_week =[]
+for elem_week, elem_time in zip_longest(week_day_unique,time_unique):
+    dict = {"key":str(elem_week) + str(elem_time), "value":1}
+    list_time_week.append(dict)
+
+
+
 
 #save to csv in output folder
 folder_path = os.getcwd()
