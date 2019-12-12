@@ -97,37 +97,70 @@ group_week = frame_fin.groupby('weekday').n_tickets.sum()
 group_week_frame = group_week.to_frame()
 
 hour_min_list = []
+year_month_day_list = []
 
 pd_time = pd.to_datetime(frame_fin['ticket_interval_time'])
 
 for elem in pd_time:
     hour_min_list.append(elem.strftime("%H:%M"))
+    year_month_day_list.append(elem.strftime('%y-%m-%d'))
+
 
 frame_fin['hour_min'] = hour_min_list
+frame_fin['date'] = year_month_day_list
 time_unique = frame_fin['hour_min'].unique()
 week_day_unique = frame_fin['weekday'].unique()
 
 def calc_percentile(df, weekday, value_to_compare, time_start='08:00', box_plot = False):
     """
     calculates percentile of value of number of tickets based on time and weekday
-    :param df: dataframe with n_tickets, weekday and hour_min
+    :param df: dataframe with n_tickets, date,weekday and hour_min
     :param weekday: weekday to choose: 0 is Monday 6 is Sunday
     :param value_to_compare: value to look for percentile
     :param time_start: time start to analyze (usually beginning of 15 minute interval)
-    :return: percentile
+    :return: percentile of score 0-100 relative to value to compare
     """
     df = df[df['weekday']==weekday]
-    array_tickets = df[df['hour_min']==time_start]['n_tickets']
+    df = df[df['hour_min']==time_start]
+    #df.hour_min = df.hour_min.astype('datetime64[ns]')
+    array_tickets = df['n_tickets'].values
     array_tickets = np.sort(array_tickets)
     result = percentileofscore(array_tickets,value_to_compare)
     if box_plot:
         plt.boxplot(array_tickets)
         plt.title("Boxplot of tickets")
         plt.show()
-
-
     return np.round(result,1)
-result = calc_percentile(df = frame_fin, weekday=2,value_to_compare=3,time_start='09:45',box_plot=True)
+
+
+def cumulative_tickets(df,weekday,time_end, value_to_compare=3, box_plot=False):
+    """
+    calculates percentile of value of number of cumulative tickets based on time and weekday
+    :param df: dataframe with n_tickets, date,weekday and hour_min
+    :param weekday: weekday to choose: 0 is Monday 6 is Sunday
+    :param time_end: time end to analyze (usually end of 15 minute interval starting at midnight)
+    :param value_to_compare: value to look for percentile
+    :param box_plot: if true plots boxplot of cumulative tickets per day
+    :return: percentile of score 0-100 relative to value to compare
+    """
+    df = df[df['weekday']==weekday]
+    df = df[df['hour_min']<time_end]
+    df_series= df.groupby(df.date).sum()
+    array_tickets = df_series.n_tickets.values
+    array_tickets = np.sort(array_tickets)
+    result = percentileofscore(array_tickets, value_to_compare)
+    if box_plot:
+        plt.boxplot(array_tickets)
+        plt.title("Boxplot of cumulative tickets")
+        plt.show()
+    return np.round(result, 1)
+
+
+resulte_cum = cumulative_tickets(df = frame_fin, weekday=2,time_end='09:45',value_to_compare=50,box_plot=True)
+
+
+
+result_single = calc_percentile(df = frame_fin, weekday=2,value_to_compare=3,time_start='09:45',box_plot=True)
 
 prod = list(product(week_day_unique,time_unique))
 df_week_time = pd.DataFrame()
