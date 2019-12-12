@@ -6,6 +6,9 @@ from matplotlib import pyplot as plt
 from utility import filter_functions
 from utility import time_functions
 
+from itertools import product
+import numpy as np
+from scipy.stats import percentileofscore
 
 
 
@@ -103,16 +106,30 @@ frame_fin['hour_min'] = hour_min_list
 time_unique = frame_fin['hour_min'].unique()
 week_day_unique = frame_fin['weekday'].unique()
 
-from itertools import zip_longest,product
+def calc_percentile(df, weekday, value_to_compare, time_start='08:00'):
+    df = df[df['weekday']==weekday]
+    array_tickets = df[df['hour_min']==time_start]['n_tickets']
+    array_tickets = np.sort(array_tickets)
+    result = percentileofscore(array_tickets,value_to_compare)
+    return result
+result = calc_percentile(df = frame_fin, weekday=2,value_to_compare=3,time_start='09:45')
+
 prod = list(product(week_day_unique,time_unique))
-a = prod[0]
-g=frame_fin[(frame_fin['weekday']==a[0])&(frame_fin['hour_min']==a[1])]
-list_time_week =[]
-for elem_week, elem_time in zip_longest(week_day_unique,time_unique):
-    dict = {"key":str(elem_week) + str(elem_time), "value":1}
-    list_time_week.append(dict)
+df_week_time = pd.DataFrame()
+dict_percentile_list = []
+for elem in prod:
+    time_week_single_df = frame_fin[(frame_fin['weekday']==elem[0])&(frame_fin['hour_min']==elem[1])]
+    df_week_time = df_week_time.append(time_week_single_df, ignore_index=True)
+    threshold_value = np.percentile(time_week_single_df["n_tickets"],conf.getint("PARAMETERS","percentile_week_time"))
+    dict = {"weekday":time_week_single_df.iloc[1,2], "min_15": time_week_single_df.iloc[1,3], "percentile_considered":conf.getint("PARAMETERS","percentile_week_time"),"threshold_percentile_value":np.round(threshold_value,0)}
+    dict_percentile_list.append(dict)
+df_percentile = pd.DataFrame(dict_percentile_list)
+df_percentile['weekday'].replace(to_replace=[0,1,2,3,4,5,6], value = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday","Sunday"],inplace=True)
 
 
+
+
+result = calc_percentile(frame_fin,4,3)
 
 
 #save to csv in output folder
@@ -121,7 +138,7 @@ min15.to_csv(folder_path + conf.get("OUTPUT","folder_path")+conf.get("OUTPUT","f
 group_week_frame.rename(index={0: "Monday", 1: "Tuesday", 2: "Wednesday",3:"Thursday",4:"Friday",5:"Saturday",6:"Sunday"},inplace=True)
 group_week_frame.to_csv(folder_path + conf.get("OUTPUT","folder_path")+conf.get("OUTPUT","filename_weekday_ticket_count"),sep=";")
 groups.to_csv(folder_path + conf.get("OUTPUT","folder_path")+conf.get("OUTPUT","groups_and_pbarea_all"),sep=";")
-pbarea = False
+pbarea = True
 
 if pbarea:
     pbarea1_group = df.groupby('pbarea1').size()
@@ -134,6 +151,8 @@ if pbarea:
     area_frazionario.to_csv(folder_path + conf.get("OUTPUT", "folder_path") + conf.get("OUTPUT", "area_frazionario"),sep=";")
     area_frazionario.to_csv(folder_path + conf.get("OUTPUT", "folder_path") + conf.get("OUTPUT", "area_frazionario"),sep=";")
     pbarea_all.to_csv(folder_path + conf.get("OUTPUT", "folder_path") + conf.get("OUTPUT", "pbarea_all"),sep=";")
+    df_percentile.to_csv(folder_path + conf.get("OUTPUT", "folder_path") + conf.get("OUTPUT", "percentile_week_time"),sep=";")
+
 
 
 
