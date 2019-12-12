@@ -111,7 +111,7 @@ frame_fin['date'] = year_month_day_list
 time_unique = frame_fin['hour_min'].unique()
 week_day_unique = frame_fin['weekday'].unique()
 
-def calc_percentile(df, weekday, value_to_compare, time_start='08:00', box_plot = False):
+def calc_percentile(df, weekday, value_to_compare, time_start='08:00', box_plot = False, save=True):
     """
     calculates percentile of value of number of tickets based on time and weekday
     :param df: dataframe with n_tickets, date,weekday and hour_min
@@ -122,6 +122,10 @@ def calc_percentile(df, weekday, value_to_compare, time_start='08:00', box_plot 
     """
     df = df[df['weekday']==weekday]
     df = df[df['hour_min']==time_start]
+    if save:
+        df_to_save = df[['n_tickets','hour_min','date']]
+        df_to_save.to_csv(os.getcwd() + conf.get("OUTPUT", "folder_path") + conf.get("OUTPUT", "single_tickets"),sep=";",index=False)
+
     #df.hour_min = df.hour_min.astype('datetime64[ns]')
     array_tickets = df['n_tickets'].values
     array_tickets = np.sort(array_tickets)
@@ -130,10 +134,11 @@ def calc_percentile(df, weekday, value_to_compare, time_start='08:00', box_plot 
         plt.boxplot(array_tickets)
         plt.title("Boxplot of tickets")
         plt.show()
+        plt.close()
     return np.round(result,1)
 
 
-def cumulative_tickets(df,weekday,time_end, value_to_compare=3, box_plot=False):
+def cumulative_tickets(df,weekday,time_end, value_to_compare=3, box_plot=False,save=True):
     """
     calculates percentile of value of number of cumulative tickets based on time and weekday
     :param df: dataframe with n_tickets, date,weekday and hour_min
@@ -146,6 +151,10 @@ def cumulative_tickets(df,weekday,time_end, value_to_compare=3, box_plot=False):
     df = df[df['weekday']==weekday]
     df = df[df['hour_min']<time_end]
     df_series= df.groupby(df.date).sum()
+    df_series_to_save = df_series['n_tickets']
+    df_series_to_save = df_series_to_save.reset_index()
+    if save:
+        df_series_to_save.to_csv(os.getcwd() + conf.get("OUTPUT", "folder_path") + conf.get("OUTPUT", "cumulative_tickets"),sep=";", header =['date','n_tickets'],index=False)
     array_tickets = df_series.n_tickets.values
     array_tickets = np.sort(array_tickets)
     result = percentileofscore(array_tickets, value_to_compare)
@@ -153,6 +162,7 @@ def cumulative_tickets(df,weekday,time_end, value_to_compare=3, box_plot=False):
         plt.boxplot(array_tickets)
         plt.title("Boxplot of cumulative tickets")
         plt.show()
+        plt.close()
     return np.round(result, 1)
 
 
