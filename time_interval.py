@@ -9,6 +9,7 @@ from utility import time_functions
 from itertools import product
 import numpy as np
 from scipy.stats import percentileofscore
+from matplotlib import pyplot as plt
 
 
 
@@ -106,13 +107,27 @@ frame_fin['hour_min'] = hour_min_list
 time_unique = frame_fin['hour_min'].unique()
 week_day_unique = frame_fin['weekday'].unique()
 
-def calc_percentile(df, weekday, value_to_compare, time_start='08:00'):
+def calc_percentile(df, weekday, value_to_compare, time_start='08:00', box_plot = False):
+    """
+    calculates percentile of value of number of tickets based on time and weekday
+    :param df: dataframe with n_tickets, weekday and hour_min
+    :param weekday: weekday to choose: 0 is Monday 6 is Sunday
+    :param value_to_compare: value to look for percentile
+    :param time_start: time start to analyze (usually beginning of 15 minute interval)
+    :return: percentile
+    """
     df = df[df['weekday']==weekday]
     array_tickets = df[df['hour_min']==time_start]['n_tickets']
     array_tickets = np.sort(array_tickets)
     result = percentileofscore(array_tickets,value_to_compare)
-    return result
-result = calc_percentile(df = frame_fin, weekday=2,value_to_compare=3,time_start='09:45')
+    if box_plot:
+        plt.boxplot(array_tickets)
+        plt.title("Boxplot of tickets")
+        plt.show()
+
+
+    return np.round(result,1)
+result = calc_percentile(df = frame_fin, weekday=2,value_to_compare=3,time_start='09:45',box_plot=True)
 
 prod = list(product(week_day_unique,time_unique))
 df_week_time = pd.DataFrame()
